@@ -31,15 +31,23 @@ filter.addEventListener('keyup', filterItems);
 function addItem(e){
   e.preventDefault();
 
-  // Get input value
+  // Get input values
   var newItem = document.getElementById('item').value;
+  var newDescription = document.getElementById('description').value;
 
   // Create new li element
   var li = document.createElement('li');
   // Add class
   li.className = 'list-group-item';
-  // Add text node with input value
-  li.appendChild(document.createTextNode(newItem));
+  
+  // Create and append item name and description elements
+  var itemName = document.createElement('h5');
+  itemName.appendChild(document.createTextNode(newItem));
+  li.appendChild(itemName);
+
+  var itemDescription = document.createElement('p');
+  itemDescription.appendChild(document.createTextNode(newDescription));
+  li.appendChild(itemDescription);
 
   // Create del button element
   var deleteBtn = document.createElement('button');
@@ -53,12 +61,9 @@ function addItem(e){
   // Append button to li
   li.appendChild(deleteBtn);
 
-
-
-  // Append li to list
-
-  itemList.appendChild(li);
+itemList.appendChild(li);
 }
+
 
 // Remove item
 function removeItem(e){
@@ -78,11 +83,13 @@ function filterItems(e){
   var items = itemList.getElementsByTagName('li');
   // Convert to an array
   Array.from(items).forEach(function(item){
-    var itemName = item.firstChild.textContent;
-    if(itemName.toLowerCase().indexOf(text) != -1){
+    var itemName = item.firstChild.textContent.toLowerCase();
+    var itemDescription = item.firstChild.nextSibling.textContent.toLowerCase();
+    if(itemName.indexOf(text) != -1 || itemDescription.indexOf(text) != -1){
       item.style.display = 'block';
     } else {
       item.style.display = 'none';
     }
   });
 }
+
