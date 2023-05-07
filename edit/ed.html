@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Putting User Input into JS Objects</title>
+    <style>
+        .formBox{
+            padding: 0.5rem 2rem;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <div class="formBox">
+            <label for="title">Movie</label>
+            <input type="text" id="title" placeholder="Title"/>
+        </div>
+        <div class="formBox">
+            <label for="yr">Year</label>
+            <input type="number" id="yr" placeholder="Year"/>
+        </div>
+        <div class="formBox">
+            <button id="btn">Click to Add</button>
+        </div>
+        <div id="msg">
+            <pre></pre>
+        </div>
+        <div id="movieList"></div>
+    </form>
+    <script>
+        let movies = [];
+       const addMovie = (ev)=>{
+    ev.preventDefault();  //to stop the form submitting
+    let movie = {
+        id: Date.now(),
+        title: document.getElementById('title').value,
+        year: document.getElementById('yr').value
+    }
+    movies.push(movie);
+    document.forms[0].reset(); // to clear the form for the next entries
+
+    //for display purposes only
+    console.warn('added' , {movies} );
+    let pre = document.querySelector('#msg pre');
+    pre.textContent = '\n' + JSON.stringify(movies, '\t', 2);
+
+    //saving to localStorage
+    localStorage.setItem('MyMovieList', JSON.stringify(movies) );
+
+    let deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.setAttribute('data-id', movie.id);
+    deleteBtn.addEventListener('click', deleteMovie);
+
+    let editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+    editBtn.setAttribute('data-id', movie.id);
+    editBtn.addEventListener('click', editMovie);
+
+    let buttonDiv = document.createElement('div');
+    buttonDiv.appendChild(deleteBtn);
+    buttonDiv.appendChild(editBtn);
+    pre.appendChild(buttonDiv);
+}
+const deleteMovie = (ev) => {
+            const id = parseInt(ev.target.getAttribute('data-id'));
+            movies = movies.filter(movie => movie.id !== id);
+            let pre = document.querySelector('#msg pre');
+            pre.textContent = '\n' + JSON.stringify(movies, '\t', 2);
+            localStorage.setItem('MyMovieList', JSON.stringify(movies) );
+            ev.target.parentNode.removeChild(ev.target);
+        }
+        document.addEventListener('DOMContentLoaded', ()=>{
+            document.getElementById('btn').addEventListener('click', addMovie);
+        });
+        const editMovie = (ev) => {
+    const id = parseInt(ev.target.getAttribute('data-id'));
+    const movie = movies.find(movie => movie.id === id);
+    const newTitle = prompt('Enter the new title:', movie.title);
+    const newYear = prompt('Enter the new year:', movie.year);
+    movie.title = newTitle;
+    movie.year = newYear;
+    let pre = document.querySelector('#msg pre');
+    pre.textContent = '\n' + JSON.stringify(movies, '\t', 2);
+    localStorage.setItem('MyMovieList', JSON.stringify(movies) );
+}
+
+
+
+    </script>
+</body>
+</html>
