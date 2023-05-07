@@ -1,6 +1,24 @@
 var form = document.getElementById('addForm');
 var itemList = document.getElementById('items');
 var filter = document.getElementById('filter');
+// Select all list items
+var items = document.querySelectorAll('#items li');
+
+// Loop through each list item
+items.forEach(function(item) {
+  // Create edit button element
+  var editBtn = document.createElement('button');
+  
+  // Add classes to edit button
+  editBtn.className = 'btn btn-primary btn-sm float-right edit';
+  
+  // Append text node
+  editBtn.appendChild(document.createTextNode('Edit'));
+  
+  // Append button to li
+  item.appendChild(editBtn);
+});
+
 
 // Form submit event
 form.addEventListener('submit', addItem);
@@ -34,14 +52,8 @@ function addItem(e){
 
   // Append button to li
   li.appendChild(deleteBtn);
-// Create edit button element
-var editBtn = document.createElement('button');
-// Add classes to edit button
-editBtn.className = 'btn btn-primary btn-sm float-right edit mr-2';
-// Append text node
-editBtn.appendChild(document.createTextNode('Edit'));
-// Append button to li
-li.appendChild(editBtn);
+
+
 
   // Append li to list
 
