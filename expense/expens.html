@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    /* Custom CSS for expense tracker */
+    .expense {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .name, .category, .amount {
+        margin-left: 10px;
+      flex-basis: 50%;
+    }
+
+    .edit-button, .delete-button {
+      background-color: white;
+      border: none;
+      color: blue;
+      text-decoration: underline ;
+     cursor: pointer;
+      margin-left: 10px;
+
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Expense Tracker</h1>
+    <form>
+      <div class="form-group">
+        <label for="expense-name">Expense Name:</label>
+        <input type="text" class="form-control" id="expense-name" placeholder="Enter expense name">
+      </div>
+      <div class="form-group">
+        <label for="expense-category">Expense Category:</label>
+        <select class="form-control" id="expense-category">
+          <option value="">Select category</option>
+          <option value="food">Food</option>
+          <option value="transportation">Transportation</option>
+          <option value="entertainment">Entertainment</option>
+          
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="expense-amount">Expense Amount:</label>
+        <input type="number" class="form-control" id="expense-amount" placeholder="Enter expense amount">
+      </div>
+      <button type="button" class="btn btn-primary" id="add-expense">Add Expense</button>
+    </form>
+    <table class="table">
+      <thead>
+        <tr>
+        <th>Expense Name</th>
+        <th>Category</th>
+        <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody id="expense-list">
+        
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+// Function to add a new expense
+function addExpense() {
+  // Get input values from form
+  const expenseName = document.getElementById("expense-name").value;
+  const expenseCategory = document.getElementById("expense-category").value;
+  const expenseAmount = document.getElementById("expense-amount").value;
+
+  // Create an object to store expense details
+  const expense = {
+    name: expenseName,
+    category: expenseCategory,
+    amount: expenseAmount
+  };
+
+  // Retrieve the existing expenses from local storage or create an empty array if it does not exist yet
+  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+  // Add the new expense object to the expenses array
+  expenses.push(expense);
+
+  // Save the updated expenses array back to local storage
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+
+  // Clear the form input fields
+  document.getElementById("expense-name").value = "";
+  document.getElementById("expense-category").value = "";
+  document.getElementById("expense-amount").value = "";
+
+  // Reload the expense list to display the updated expenses
+  loadExpenseList();
+}
+
+// Add event listener for the "Add Expense" button
+document.getElementById("add-expense").addEventListener("click", addExpense);
+
+function loadExpenseList() {
+  // Retrieve the expenses from local storage
+  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+  // Get a reference to the expense list container element
+  const expenseList = document.getElementById("expense-list");
+
+  // Clear the existing content of the expense list container
+  expenseList.innerHTML = "";
+
+  // Loop through the expenses and create an HTML element for each expense
+  expenses.forEach(function(expense, index) {
+    // Create a div element to contain the expense details
+    const expenseDiv = document.createElement("div");
+    expenseDiv.classList.add("expense");
+
+    // Create a span element to display the expense name
+    const nameSpan = document.createElement("span");
+    nameSpan.classList.add("name");
+    nameSpan.textContent = expense.name;
+    expenseDiv.appendChild(nameSpan);
+
+    // Create a span element to display the expense category
+    const categorySpan = document.createElement("span");
+    categorySpan.classList.add("category");
+    categorySpan.textContent = expense.category;
+    expenseDiv.appendChild(categorySpan);
+
+    // Create a span element to display the expense amount
+    const amountSpan = document.createElement("span");
+    amountSpan.classList.add("amount");
+    amountSpan.textContent = expense.amount;
+    expenseDiv.appendChild(amountSpan);
+
+    // Create a button element to edit the expense
+    const editButton = document.createElement("button");
+    editButton.classList.add("edit-button");
+    editButton.textContent = "Edit";
+    editButton.addEventListener("click", function() {
+      // Set the input field values to the current expense details
+      document.getElementById("expense-name").value = expense.name;
+      document.getElementById("expense-category").value = expense.category;
+      document.getElementById("expense-amount").value = expense.amount;
+
+      // Remove the current expense from the expenses array
+      expenses.splice(index, 1);
+
+      // Save the updated expenses array back to local storage
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+
+      // Reload the expense list to display the updated expenses
+      loadExpenseList();
+    });
+    expenseDiv.appendChild(editButton);
+
+    // Create a button element to delete the expense
+    const deleteButton = document.createElement("button");
+    deleteButton.classList.add("delete-button");
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", function() {
+      // Remove the expense from the expenses array
+      expenses.splice(index, 1);
+
+      // Save the updated expenses array back to local storage
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+
+      // Reload the expense list to display the updated expenses
+      loadExpenseList();
+    });
+    expenseDiv.appendChild(deleteButton);
+
+    // Add the expense div to the expense list container
+    expenseList.appendChild(expenseDiv);
+  });
+}
+
+
+</script>
+</body>
+</html>
+
+
+
+
+
